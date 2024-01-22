@@ -9,16 +9,21 @@ import type { Rule } from 'ant-design-vue/es/form';
 const formRef = ref<FormInstance>()
 const form = ref<{
   tableId: string | undefined,
+  titleFieldId: string | undefined,
   startTimeFieldId: string | undefined,
   endTimeFieldId: string | undefined,
 }>({
   tableId: undefined,
+  titleFieldId: undefined,
   startTimeFieldId: undefined,
   endTimeFieldId: undefined,
 })
 const formRules: Record<string, Rule[]> = {
   tableId: [
     { required: true, message: '请选择表格' },
+  ],
+  titleFieldId: [
+    { required: true, message: '请选择标题字段' },
   ],
   startTimeFieldId: [
     { required: true, message: '请选择开始时间字段' },
@@ -28,13 +33,10 @@ const formRules: Record<string, Rule[]> = {
   ],
 }
 
-const { tableId, endTimeFieldId, startTimeFieldId } = toRefs(form.value)
+const { tableId, titleFieldId, endTimeFieldId, startTimeFieldId } = toRefs(form.value)
 bitable.base.getActiveTable().then(async (table) => {
   const id = table.id
   tableId.value = id
-  table.getFieldMetaList().then((res) => {
-    console.log(res)
-  })
 })
 
 const loading = ref(false)
@@ -48,6 +50,10 @@ const onSubmit = async () => {
   <Form :layout="'vertical'" :model="form" :rules="formRules" ref="formRef">
     <FormItem label="表格" name="tableId">
       <TableSelect v-model:table-id="form.tableId"></TableSelect>
+    </FormItem>
+    <FormItem label="标题字段" name="titleFieldId">
+      <FieldSelect v-model:table-id="form.tableId" v-model:field-id="form.titleFieldId" :field-type-list="[FieldType.Text]" placeholder="只支持文本字段">
+      </FieldSelect>
     </FormItem>
     <FormItem label="开始时间字段" name="startTimeFieldId">
       <FieldSelect v-model:table-id="form.tableId" v-model:field-id="form.startTimeFieldId" :field-type-list="[FieldType.DateTime]" placeholder="只支持时间字段">
